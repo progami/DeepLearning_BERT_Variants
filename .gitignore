@@ -1,0 +1,47 @@
+# Ignore model checkpoints and results directories
+results_*/
+
+# Ignore fine-tuned model directories
+*-finetuned-covid-qa/
+
+# Ignore intermediate and temporary files
+*.tmp
+*.log
+*.out
+*.bak
+*.swp
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore virtual environments
+venv/
+.env/
+env/
+
+# Ignore large dataset files
+*.csv
+*.tsv
+*.json
+*.parquet
+
+# Ignore large binary files
+*.bin
+*.h5
+*.pt
+
+# Optional: Ignore large archives
+*.zip
+*.tar
+*.tar.gz
+*.rar
+
