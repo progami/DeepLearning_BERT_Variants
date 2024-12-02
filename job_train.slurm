@@ -5,10 +5,10 @@
 #SBATCH --ntasks-per-node=4          # Number of tasks/processes per node
 #SBATCH --gres=gpu:4                 # Request 4 GPUs
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=32G                    # Increased memory allocation
+#SBATCH --mem=64G                    # Increased memory allocation
 #SBATCH --time=24:00:00
-#SBATCH --output=output_%j.out
-#SBATCH --error=error_%j.err
+#SBATCH --output=output.out
+#SBATCH --error=error.err
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=jarrar@ksu.edu
 

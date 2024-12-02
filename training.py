@@ -298,11 +298,18 @@ def train_model(model_name, tokenizer_class, model_class):
     tokenizer = tokenizer_class.from_pretrained(model_name)
     model = model_class.from_pretrained(model_name)
 
-    # Enable gradient checkpointing to reduce memory usage
-    if hasattr(model, 'gradient_checkpointing_enable'):
-        model.gradient_checkpointing_enable()
+    # Enable gradient checkpointing except for albert-base-v2
+    if model_name != 'albert-base-v2':
+        if hasattr(model, 'gradient_checkpointing_enable'):
+            try:
+                model.gradient_checkpointing_enable()
+                print(f"Enabled gradient checkpointing for {model_name}")
+            except ValueError as e:
+                print(f"Could not enable gradient checkpointing for {model_name}: {e}")
+        else:
+            print(f"Gradient checkpointing not available for {model_name}")
     else:
-        print(f"Gradient checkpointing not available for {model_name}")
+        print(f"Skipping gradient checkpointing for {model_name}")
 
     # Tokenize the training dataset with multiprocessing
     tokenized_train_dataset = dataset['train'].map(
@@ -349,7 +356,10 @@ def train_model(model_name, tokenizer_class, model_class):
         results = metric.compute(predictions=formatted_predictions, references=references)
 
         # Return the metrics
-        return results
+        return {
+            'exact_match': results['exact_match'],
+            'f1': results['f1'],
+        }
 
     # Set up training arguments
     training_args = TrainingArguments(
@@ -368,6 +378,7 @@ def train_model(model_name, tokenizer_class, model_class):
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         dataloader_num_workers=4,
         dataloader_pin_memory=True,
+        ddp_find_unused_parameters=True,  # Add this if you encounter DDP errors
     )
 
     # Use the custom DataCollatorForQA

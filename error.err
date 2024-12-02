@@ -1,0 +1,163 @@
+Map (num_proc=4):   0%|          | 0/1615 [00:00<?, ? examples/s]Map (num_proc=4):   0%|          | 0/1615 [00:00<?, ? examples/s]Map (num_proc=4):   0%|          | 0/1615 [00:00<?, ? examples/s]Map (num_proc=4):   0%|          | 0/1615 [00:00<?, ? examples/s]Map (num_proc=4):  25%|██▌       | 404/1615 [00:14<00:43, 27.94 examples/s]Map (num_proc=4):  25%|██▌       | 404/1615 [00:14<00:43, 27.85 examples/s]Map (num_proc=4):  25%|██▌       | 404/1615 [00:14<00:43, 27.67 examples/s]Map (num_proc=4):  25%|██▌       | 404/1615 [00:14<00:44, 27.24 examples/s]Map (num_proc=4):  50%|█████     | 808/1615 [00:14<00:12, 65.36 examples/s]Map (num_proc=4):  50%|█████     | 808/1615 [00:15<00:12, 64.30 examples/s]Map (num_proc=4):  50%|█████     | 808/1615 [00:15<00:12, 62.75 examples/s]Map (num_proc=4):  50%|█████     | 808/1615 [00:15<00:13, 61.23 examples/s]Map (num_proc=4):  75%|███████▌  | 1212/1615 [00:15<00:03, 110.65 examples/s]Map (num_proc=4):  75%|███████▌  | 1212/1615 [00:15<00:03, 109.67 examples/s]Map (num_proc=4):  75%|███████▌  | 1212/1615 [00:15<00:03, 107.92 examples/s]Map (num_proc=4): 100%|██████████| 1615/1615 [00:16<00:00, 168.81 examples/s]Map (num_proc=4): 100%|██████████| 1615/1615 [00:16<00:00, 162.32 examples/s]Map (num_proc=4): 100%|██████████| 1615/1615 [00:16<00:00, 158.27 examples/s]Map (num_proc=4): 100%|██████████| 1615/1615 [00:16<00:00, 97.47 examples/s] 
+Map (num_proc=4):   0%|          | 0/404 [00:00<?, ? examples/s]Map (num_proc=4): 100%|██████████| 1615/1615 [00:16<00:00, 95.68 examples/s] 
+Map (num_proc=4): 100%|██████████| 1615/1615 [00:17<00:00, 94.76 examples/s] 
+Map (num_proc=4):   0%|          | 0/404 [00:00<?, ? examples/s]Map (num_proc=4): 100%|██████████| 1615/1615 [00:17<00:00, 136.10 examples/s]Map (num_proc=4):   0%|          | 0/404 [00:00<?, ? examples/s]Map (num_proc=4): 100%|██████████| 1615/1615 [00:17<00:00, 90.69 examples/s] 
+Map (num_proc=4):   0%|          | 0/404 [00:00<?, ? examples/s]Map (num_proc=4):  25%|██▌       | 101/404 [00:05<00:15, 19.44 examples/s]Map (num_proc=4):  25%|██▌       | 101/404 [00:05<00:15, 19.75 examples/s]Map (num_proc=4):  25%|██▌       | 101/404 [00:05<00:15, 20.04 examples/s]Map (num_proc=4):  50%|█████     | 202/404 [00:05<00:04, 41.10 examples/s]Map (num_proc=4):  50%|█████     | 202/404 [00:05<00:04, 41.80 examples/s]Map (num_proc=4):  75%|███████▌  | 303/404 [00:05<00:01, 62.73 examples/s]Map (num_proc=4): 100%|██████████| 404/404 [00:06<00:00, 89.38 examples/s]Map (num_proc=4):  25%|██▌       | 101/404 [00:05<00:15, 19.26 examples/s]Map (num_proc=4): 100%|██████████| 404/404 [00:06<00:00, 84.73 examples/s]Map (num_proc=4): 100%|██████████| 404/404 [00:06<00:00, 95.31 examples/s]Map (num_proc=4):  50%|█████     | 202/404 [00:05<00:04, 44.17 examples/s]Map (num_proc=4): 100%|██████████| 404/404 [00:06<00:00, 62.04 examples/s]
+Map (num_proc=4):  75%|███████▌  | 303/404 [00:05<00:01, 72.35 examples/s]Map (num_proc=4): 100%|██████████| 404/404 [00:07<00:00, 56.74 examples/s]
+Map (num_proc=4): 100%|██████████| 404/404 [00:06<00:00, 60.77 examples/s]
+Map (num_proc=4): 100%|██████████| 404/404 [00:06<00:00, 98.97 examples/s]Map (num_proc=4): 100%|██████████| 404/404 [00:06<00:00, 60.47 examples/s]
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/homes/jarrar/Desktop/dl_project/training.py", line 412, in <module>
+[rank1]:     train_model(
+[rank1]:   File "/homes/jarrar/Desktop/dl_project/training.py", line 399, in train_model
+[rank1]:     trainer.train()
+[rank1]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/transformers/trainer.py", line 2123, in train
+[rank1]:     return inner_training_loop(
+[rank1]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/transformers/trainer.py", line 2481, in _inner_training_loop
+[rank1]:     tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+[rank1]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/transformers/trainer.py", line 3612, in training_step
+[rank1]:     self.accelerator.backward(loss, **kwargs)
+[rank1]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/accelerate/accelerator.py", line 2237, in backward
+[rank1]:     self.scaler.scale(loss).backward(**kwargs)
+[rank1]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/_tensor.py", line 581, in backward
+[rank1]:     torch.autograd.backward(
+[rank1]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/__init__.py", line 347, in backward
+[rank1]:     _engine_run_backward(
+[rank1]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/graph.py", line 825, in _engine_run_backward
+[rank1]:     return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[rank1]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/function.py", line 307, in apply
+[rank1]:     return user_fn(self, *args)
+[rank1]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/utils/checkpoint.py", line 321, in backward
+[rank1]:     torch.autograd.backward(outputs_with_grad, args_with_grad)
+[rank1]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/__init__.py", line 347, in backward
+[rank1]:     _engine_run_backward(
+[rank1]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/graph.py", line 825, in _engine_run_backward
+[rank1]:     return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[rank1]: RuntimeError: Expected to mark a variable ready only once. This error is caused by one of the following reasons: 1) Use of a module parameter outside the `forward` function. Please make sure model parameters are not shared across multiple concurrent forward-backward passes. or try to use _set_static_graph() as a workaround if this module graph does not change during training loop.2) Reused parameters in multiple reentrant backward passes. For example, if you use multiple `checkpoint` functions to wrap the same part of your model, it would result in the same set of parameters been used by different reentrant backward passes multiple times, and hence marking a variable ready multiple times. DDP does not support such use cases in default. You can try to use _set_static_graph() as a workaround if your module graph does not change over iterations.
+[rank1]: Parameter at index 195 with name bert.encoder.layer.11.output.LayerNorm.weight has been marked as ready twice. This means that multiple autograd engine  hooks have fired for this particular parameter during this iteration.
+[rank2]: Traceback (most recent call last):
+[rank2]:   File "/homes/jarrar/Desktop/dl_project/training.py", line 412, in <module>
+[rank2]:     train_model(
+[rank2]:   File "/homes/jarrar/Desktop/dl_project/training.py", line 399, in train_model
+[rank2]:     trainer.train()
+[rank2]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/transformers/trainer.py", line 2123, in train
+[rank2]:     return inner_training_loop(
+[rank2]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/transformers/trainer.py", line 2481, in _inner_training_loop
+[rank2]:     tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+[rank2]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/transformers/trainer.py", line 3612, in training_step
+[rank2]:     self.accelerator.backward(loss, **kwargs)
+[rank2]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/accelerate/accelerator.py", line 2237, in backward
+[rank2]:     self.scaler.scale(loss).backward(**kwargs)
+[rank2]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/_tensor.py", line 581, in backward
+[rank2]:     torch.autograd.backward(
+[rank2]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/__init__.py", line 347, in backward
+[rank2]:     _engine_run_backward(
+[rank2]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/graph.py", line 825, in _engine_run_backward
+[rank2]:     return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[rank2]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/function.py", line 307, in apply
+[rank2]:     return user_fn(self, *args)
+[rank2]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/utils/checkpoint.py", line 321, in backward
+[rank2]:     torch.autograd.backward(outputs_with_grad, args_with_grad)
+[rank2]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/__init__.py", line 347, in backward
+[rank2]:     _engine_run_backward(
+[rank2]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/graph.py", line 825, in _engine_run_backward
+[rank2]:     return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[rank2]: RuntimeError: Expected to mark a variable ready only once. This error is caused by one of the following reasons: 1) Use of a module parameter outside the `forward` function. Please make sure model parameters are not shared across multiple concurrent forward-backward passes. or try to use _set_static_graph() as a workaround if this module graph does not change during training loop.2) Reused parameters in multiple reentrant backward passes. For example, if you use multiple `checkpoint` functions to wrap the same part of your model, it would result in the same set of parameters been used by different reentrant backward passes multiple times, and hence marking a variable ready multiple times. DDP does not support such use cases in default. You can try to use _set_static_graph() as a workaround if your module graph does not change over iterations.
+[rank2]: Parameter at index 195 with name bert.encoder.layer.11.output.LayerNorm.weight has been marked as ready twice. This means that multiple autograd engine  hooks have fired for this particular parameter during this iteration.
+[rank3]: Traceback (most recent call last):
+[rank3]:   File "/homes/jarrar/Desktop/dl_project/training.py", line 412, in <module>
+[rank3]:     train_model(
+[rank3]:   File "/homes/jarrar/Desktop/dl_project/training.py", line 399, in train_model
+[rank3]:     trainer.train()
+[rank3]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/transformers/trainer.py", line 2123, in train
+[rank3]:     return inner_training_loop(
+[rank3]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/transformers/trainer.py", line 2481, in _inner_training_loop
+[rank3]:     tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+[rank3]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/transformers/trainer.py", line 3612, in training_step
+[rank3]:     self.accelerator.backward(loss, **kwargs)
+[rank3]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/accelerate/accelerator.py", line 2237, in backward
+[rank3]:     self.scaler.scale(loss).backward(**kwargs)
+[rank3]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/_tensor.py", line 581, in backward
+[rank3]:     torch.autograd.backward(
+[rank3]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/__init__.py", line 347, in backward
+[rank3]:     _engine_run_backward(
+[rank3]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/graph.py", line 825, in _engine_run_backward
+[rank3]:     return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[rank3]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/function.py", line 307, in apply
+[rank3]:     return user_fn(self, *args)
+[rank3]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/utils/checkpoint.py", line 321, in backward
+[rank3]:     torch.autograd.backward(outputs_with_grad, args_with_grad)
+[rank3]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/__init__.py", line 347, in backward
+[rank3]:     _engine_run_backward(
+[rank3]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/graph.py", line 825, in _engine_run_backward
+[rank3]:     return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[rank3]: RuntimeError: Expected to mark a variable ready only once. This error is caused by one of the following reasons: 1) Use of a module parameter outside the `forward` function. Please make sure model parameters are not shared across multiple concurrent forward-backward passes. or try to use _set_static_graph() as a workaround if this module graph does not change during training loop.2) Reused parameters in multiple reentrant backward passes. For example, if you use multiple `checkpoint` functions to wrap the same part of your model, it would result in the same set of parameters been used by different reentrant backward passes multiple times, and hence marking a variable ready multiple times. DDP does not support such use cases in default. You can try to use _set_static_graph() as a workaround if your module graph does not change over iterations.
+[rank3]: Parameter at index 195 with name bert.encoder.layer.11.output.LayerNorm.weight has been marked as ready twice. This means that multiple autograd engine  hooks have fired for this particular parameter during this iteration.
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/homes/jarrar/Desktop/dl_project/training.py", line 412, in <module>
+[rank0]:     train_model(
+[rank0]:   File "/homes/jarrar/Desktop/dl_project/training.py", line 399, in train_model
+[rank0]:     trainer.train()
+[rank0]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/transformers/trainer.py", line 2123, in train
+[rank0]:     return inner_training_loop(
+[rank0]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/transformers/trainer.py", line 2481, in _inner_training_loop
+[rank0]:     tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+[rank0]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/transformers/trainer.py", line 3612, in training_step
+[rank0]:     self.accelerator.backward(loss, **kwargs)
+[rank0]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/accelerate/accelerator.py", line 2237, in backward
+[rank0]:     self.scaler.scale(loss).backward(**kwargs)
+[rank0]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/_tensor.py", line 581, in backward
+[rank0]:     torch.autograd.backward(
+[rank0]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/__init__.py", line 347, in backward
+[rank0]:     _engine_run_backward(
+[rank0]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/graph.py", line 825, in _engine_run_backward
+[rank0]:     return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[rank0]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/function.py", line 307, in apply
+[rank0]:     return user_fn(self, *args)
+[rank0]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/utils/checkpoint.py", line 321, in backward
+[rank0]:     torch.autograd.backward(outputs_with_grad, args_with_grad)
+[rank0]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/__init__.py", line 347, in backward
+[rank0]:     _engine_run_backward(
+[rank0]:   File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/autograd/graph.py", line 825, in _engine_run_backward
+[rank0]:     return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[rank0]: RuntimeError: Expected to mark a variable ready only once. This error is caused by one of the following reasons: 1) Use of a module parameter outside the `forward` function. Please make sure model parameters are not shared across multiple concurrent forward-backward passes. or try to use _set_static_graph() as a workaround if this module graph does not change during training loop.2) Reused parameters in multiple reentrant backward passes. For example, if you use multiple `checkpoint` functions to wrap the same part of your model, it would result in the same set of parameters been used by different reentrant backward passes multiple times, and hence marking a variable ready multiple times. DDP does not support such use cases in default. You can try to use _set_static_graph() as a workaround if your module graph does not change over iterations.
+[rank0]: Parameter at index 195 with name bert.encoder.layer.11.output.LayerNorm.weight has been marked as ready twice. This means that multiple autograd engine  hooks have fired for this particular parameter during this iteration.
+[rank0]:[W1202 00:21:25.382805056 ProcessGroupNCCL.cpp:1250] Warning: WARNING: process group has NOT been destroyed before we destruct ProcessGroupNCCL. On normal program exit, the application should call destroy_process_group to ensure that any pending NCCL operations have finished in this process. In rare cases this process can exit before this point and block the progress of another member of the process group. This constraint has always been present,  but this warning has only been added since PyTorch 2.4 (function operator())
+W1202 00:21:27.446128 1657241 torch/distributed/elastic/multiprocessing/api.py:897] Sending process 1657502 closing signal SIGTERM
+W1202 00:21:27.449106 1657241 torch/distributed/elastic/multiprocessing/api.py:897] Sending process 1657503 closing signal SIGTERM
+E1202 00:21:27.564198 1657241 torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 2 (pid: 1657504) of binary: /homes/jarrar/virtualenvs/automl_env/bin/python
+Traceback (most recent call last):
+  File "/homes/jarrar/virtualenvs/automl_env/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+  File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+  File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/distributed/run.py", line 919, in main
+    run(args)
+  File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/distributed/run.py", line 910, in run
+    elastic_launch(
+  File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/homes/jarrar/virtualenvs/automl_env/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+training.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2024-12-02_00:21:27
+  host      : wizard29.beocat.ksu.edu
+  rank      : 3 (local_rank: 3)
+  exitcode  : 1 (pid: 1657505)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2024-12-02_00:21:27
+  host      : wizard29.beocat.ksu.edu
+  rank      : 2 (local_rank: 2)
+  exitcode  : 1 (pid: 1657504)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
