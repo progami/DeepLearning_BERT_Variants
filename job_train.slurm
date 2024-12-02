@@ -2,7 +2,7 @@
 #SBATCH --job-name=qa_training
 #SBATCH --partition=killable.q
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=4          # Number of tasks/processes per node
+#SBATCH --ntasks-per-node=1          # Set to 1; torchrun will manage multiple processes
 #SBATCH --gres=gpu:4                 # Request 4 GPUs
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G                    # Increased memory allocation
@@ -28,8 +28,10 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 
 # Set environment variables for NCCL and OpenMP
 export NCCL_DEBUG=INFO
-export NCCL_SOCKET_IFNAME=^lo,docker0
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+
+# Optional: Set a unique master port if needed
+export MASTER_PORT=12355
 
 # Run your script with desired options using torchrun
 torchrun --nnodes=1 --nproc_per_node=4 training.py \

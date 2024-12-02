@@ -298,18 +298,8 @@ def train_model(model_name, tokenizer_class, model_class):
     tokenizer = tokenizer_class.from_pretrained(model_name)
     model = model_class.from_pretrained(model_name)
 
-    # Enable gradient checkpointing except for albert-base-v2
-    if model_name != 'albert-base-v2':
-        if hasattr(model, 'gradient_checkpointing_enable'):
-            try:
-                model.gradient_checkpointing_enable()
-                print(f"Enabled gradient checkpointing for {model_name}")
-            except ValueError as e:
-                print(f"Could not enable gradient checkpointing for {model_name}: {e}")
-        else:
-            print(f"Gradient checkpointing not available for {model_name}")
-    else:
-        print(f"Skipping gradient checkpointing for {model_name}")
+    # Disable gradient checkpointing
+    print(f"Gradient checkpointing is disabled for {model_name}")
 
     # Tokenize the training dataset with multiprocessing
     tokenized_train_dataset = dataset['train'].map(
@@ -361,12 +351,16 @@ def train_model(model_name, tokenizer_class, model_class):
             'f1': results['f1'],
         }
 
+    # Adjust per_device_train_batch_size and gradient_accumulation_steps if necessary
+    per_device_train_batch_size = args.batch_size
+    gradient_accumulation_steps = args.gradient_accumulation_steps
+
     # Set up training arguments
     training_args = TrainingArguments(
         output_dir=f'./results_{model_name}',
         evaluation_strategy='epoch',
         learning_rate=args.learning_rate,
-        per_device_train_batch_size=args.batch_size,
+        per_device_train_batch_size=per_device_train_batch_size,
         per_device_eval_batch_size=args.batch_size,
         num_train_epochs=args.epochs,
         weight_decay=0.01,
@@ -375,10 +369,11 @@ def train_model(model_name, tokenizer_class, model_class):
         fp16=True,  # Enable mixed precision training
         logging_steps=50,
         report_to="none",
-        gradient_accumulation_steps=args.gradient_accumulation_steps,
+        gradient_accumulation_steps=gradient_accumulation_steps,
         dataloader_num_workers=4,
         dataloader_pin_memory=True,
-        ddp_find_unused_parameters=True,  # Add this if you encounter DDP errors
+        ddp_find_unused_parameters=False,  # Set to False
+        # ddp_static_graph=True,  # Uncomment if you want to try static graph mode (experimental)
     )
 
     # Use the custom DataCollatorForQA
