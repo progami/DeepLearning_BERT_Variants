@@ -1,26 +1,33 @@
+#!/usr/bin/env python
+# training.py
+
 import argparse
 import json
-import torch
-import numpy as np
-from datasets import Dataset
-from transformers import (
-    BertTokenizerFast, BertForQuestionAnswering,
-    RobertaTokenizerFast, RobertaForQuestionAnswering,
-    AlbertTokenizerFast, AlbertForQuestionAnswering,
-    Trainer, TrainingArguments,
-    DataCollatorWithPadding
-)
-from transformers import logging
-from evaluate import load as load_metric
-from collections import OrderedDict
-import warnings
-from typing import Mapping
-from tqdm import tqdm
 import os
+import warnings
+from collections import OrderedDict
+
+import numpy as np
+import torch
+from datasets import Dataset
+from evaluate import load as load_metric
+from tqdm import tqdm
+from transformers import (
+    AlbertForQuestionAnswering,
+    AlbertTokenizerFast,
+    BertForQuestionAnswering,
+    BertTokenizerFast,
+    RobertaForQuestionAnswering,
+    RobertaTokenizerFast,
+    Trainer,
+    TrainingArguments,
+    DataCollatorWithPadding,
+    logging as transformers_logging,
+)
 
 # Suppress warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
-logging.set_verbosity_error()
+transformers_logging.set_verbosity_error()
 
 # Suppress tokenizers parallelism warning
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -33,6 +40,9 @@ parser.add_argument('--train_albert', action='store_true', help='Train ALBERT mo
 parser.add_argument('--epochs', type=int, default=3, help='Number of training epochs')
 parser.add_argument('--batch_size', type=int, default=2, help='Batch size per device')
 parser.add_argument('--learning_rate', type=float, default=3e-5, help='Learning rate')
+parser.add_argument('--max_length', type=int, default=384, help='Maximum sequence length')
+parser.add_argument('--doc_stride', type=int, default=128, help='Document stride for sliding window')
+parser.add_argument('--gradient_accumulation_steps', type=int, default=2, help='Gradient accumulation steps')
 args = parser.parse_args()
 
 # Check if at least one model is selected
@@ -104,8 +114,8 @@ def prepare_train_features(examples):
         examples['question'],
         examples['context'],
         truncation='only_second',
-        max_length=256,  # Reduced max_length to reduce memory usage
-        stride=128,
+        max_length=args.max_length,
+        stride=args.doc_stride,
         return_overflowing_tokens=True,
         return_offsets_mapping=True,  # We need offset mappings for training
         padding='max_length',
@@ -171,8 +181,8 @@ def prepare_validation_features(examples):
         examples['question'],
         examples['context'],
         truncation='only_second',
-        max_length=256,  # Reduced max_length to reduce memory usage
-        stride=128,
+        max_length=args.max_length,
+        stride=args.doc_stride,
         return_overflowing_tokens=True,
         return_offsets_mapping=True,
         padding='max_length',
@@ -272,8 +282,6 @@ def postprocess_qa_predictions(
     return final_predictions
 
 # Custom Data Collator to exclude 'offset_mapping' and 'example_id'
-from transformers.data.data_collator import DataCollatorWithPadding
-
 class DataCollatorForQA(DataCollatorWithPadding):
     def __call__(self, features):
         # Remove 'offset_mapping' and 'example_id' from features
@@ -290,27 +298,26 @@ def train_model(model_name, tokenizer_class, model_class):
     tokenizer = tokenizer_class.from_pretrained(model_name)
     model = model_class.from_pretrained(model_name)
 
-    # Enable gradient checkpointing only if supported
+    # Enable gradient checkpointing to reduce memory usage
     if hasattr(model, 'gradient_checkpointing_enable'):
-        try:
-            model.gradient_checkpointing_enable()
-        except ValueError:
-            print(f"Gradient checkpointing is not supported for {model_name}. Continuing without it.")
+        model.gradient_checkpointing_enable()
     else:
-        print(f"Gradient checkpointing method not found for {model_name}. Continuing without it.")
+        print(f"Gradient checkpointing not available for {model_name}")
 
-    # Tokenize the training dataset without multiprocessing
+    # Tokenize the training dataset with multiprocessing
     tokenized_train_dataset = dataset['train'].map(
         prepare_train_features,
         batched=True,
         remove_columns=dataset['train'].column_names,
+        num_proc=4,  # Adjust num_proc based on available CPUs and memory
     )
 
-    # Tokenize the evaluation dataset without multiprocessing
+    # Tokenize the evaluation dataset with multiprocessing
     tokenized_eval_dataset = dataset['test'].map(
         prepare_validation_features,
         batched=True,
         remove_columns=dataset['test'].column_names,
+        num_proc=4,  # Adjust num_proc based on available CPUs and memory
     )
 
     # Define compute_metrics inside train_model to access tokenized_datasets
@@ -339,7 +346,10 @@ def train_model(model_name, tokenizer_class, model_class):
         metric = load_metric(metric_name)
 
         # Compute the metric
-        return metric.compute(predictions=formatted_predictions, references=references)
+        results = metric.compute(predictions=formatted_predictions, references=references)
+
+        # Return the metrics
+        return results
 
     # Set up training arguments
     training_args = TrainingArguments(
@@ -352,11 +362,12 @@ def train_model(model_name, tokenizer_class, model_class):
         weight_decay=0.01,
         save_total_limit=2,
         remove_unused_columns=False,  # Keep all columns
-        fp16=False,
+        fp16=True,  # Enable mixed precision training
         logging_steps=50,
         report_to="none",
-        gradient_accumulation_steps=1,
+        gradient_accumulation_steps=args.gradient_accumulation_steps,
         dataloader_num_workers=4,
+        dataloader_pin_memory=True,
     )
 
     # Use the custom DataCollatorForQA

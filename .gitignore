@@ -6,7 +6,6 @@ results_*/
 # Ignore intermediate and temporary files
 *.tmp
 *.log
-*.out
 *.bak
 *.swp
 

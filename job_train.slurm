@@ -2,10 +2,10 @@
 #SBATCH --job-name=qa_training
 #SBATCH --partition=killable.q
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=4          # Number of tasks (processes) per node
+#SBATCH --ntasks-per-node=4          # Number of tasks/processes per node
 #SBATCH --gres=gpu:4                 # Request 4 GPUs
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=32G
+#SBATCH --mem=32G                    # Increased memory allocation
 #SBATCH --time=24:00:00
 #SBATCH --output=output_%j.out
 #SBATCH --error=error_%j.err
@@ -32,5 +32,12 @@ export NCCL_SOCKET_IFNAME=^lo,docker0
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 # Run your script with desired options using torchrun
-torchrun --nnodes=1 --nproc_per_node=4 training.py --train_bert --train_albert --train_roberta --epochs 5 --batch_size 4 --learning_rate 3e-5
+torchrun --nnodes=1 --nproc_per_node=4 training.py \
+    --train_bert --train_albert --train_roberta \
+    --epochs 5 \
+    --batch_size 2 \
+    --learning_rate 3e-5 \
+    --max_length 384 \
+    --doc_stride 128 \
+    --gradient_accumulation_steps 2
 
