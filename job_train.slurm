@@ -7,8 +7,8 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G                    # Increased memory allocation
 #SBATCH --time=24:00:00
-#SBATCH --output=output.out
-#SBATCH --error=error.err
+#SBATCH --output=logs.out            # Redirect standard output to logs.out
+#SBATCH --error=error.err            # Redirect standard error to error.err
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=jarrar@ksu.edu
 
@@ -27,7 +27,7 @@ source ~/virtualenvs/automl_env/bin/activate
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 
 # Set environment variables for NCCL and OpenMP
-export NCCL_DEBUG=INFO
+unset NCCL_DEBUG               # Disable NCCL logs
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 # Optional: Set a unique master port if needed
@@ -36,7 +36,7 @@ export MASTER_PORT=12355
 # Run your script with desired options using torchrun
 torchrun --nnodes=1 --nproc_per_node=4 training.py \
     --train_bert --train_albert --train_roberta \
-    --epochs 5 \
+    --epochs 1 \
     --batch_size 2 \
     --learning_rate 3e-5 \
     --max_length 384 \

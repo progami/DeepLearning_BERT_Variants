@@ -1,0 +1,96 @@
+Using device: cuda
+Using device: cuda
+Using device: cuda
+Using device: cuda
+
+***** Training bert-base-uncased *****
+
+***** Training bert-base-uncased *****
+
+***** Training bert-base-uncased *****
+
+***** Training bert-base-uncased *****
+Gradient checkpointing is disabled for bert-base-uncased
+Gradient checkpointing is disabled for bert-base-uncased
+Gradient checkpointing is disabled for bert-base-uncased
+Gradient checkpointing is disabled for bert-base-uncased
+Epoch 1 completed for bert-base-uncased
+Epoch 1 completed for bert-base-uncased
+Epoch 1 completed for bert-base-uncasedEpoch 1 completed for bert-base-uncased
+
+{'loss': 0.3511, 'grad_norm': 19.528318405151367, 'learning_rate': 2.400969932104753e-05, 'epoch': 0.9998383707774365}
+{'eval_runtime': 17.7286, 'eval_samples_per_second': 709.645, 'eval_steps_per_second': 88.727, 'epoch': 0.9998383707774365}
+Epoch 2 completed for bert-base-uncased
+Epoch 2 completed for bert-base-uncasedEpoch 2 completed for bert-base-uncased
+
+Epoch 2 completed for bert-base-uncased
+{'loss': 0.2334, 'grad_norm': 0.06528881192207336, 'learning_rate': 1.8013579049466537e-05, 'epoch': 2.0}
+{'eval_runtime': 17.7526, 'eval_samples_per_second': 708.683, 'eval_steps_per_second': 88.607, 'epoch': 2.0}
+Epoch 3 completed for bert-base-uncased
+Epoch 3 completed for bert-base-uncased
+Epoch 3 completed for bert-base-uncased
+Epoch 3 completed for bert-base-uncased
+{'loss': 0.3032, 'grad_norm': 23.07181167602539, 'learning_rate': 1.201745877788555e-05, 'epoch': 2.9998383707774368}
+{'eval_runtime': 17.8667, 'eval_samples_per_second': 704.16, 'eval_steps_per_second': 88.041, 'epoch': 2.9998383707774368}
+Epoch 4 completed for bert-base-uncasedEpoch 4 completed for bert-base-uncased
+
+Epoch 4 completed for bert-base-uncased
+Epoch 4 completed for bert-base-uncased
+{'loss': 0.2471, 'grad_norm': 189.4738006591797, 'learning_rate': 6.017458777885549e-06, 'epoch': 4.0}
+{'eval_runtime': 17.9033, 'eval_samples_per_second': 702.719, 'eval_steps_per_second': 87.861, 'epoch': 4.0}
+Epoch 5 completed for bert-base-uncasedEpoch 5 completed for bert-base-uncased
+Epoch 5 completed for bert-base-uncased
+
+Epoch 5 completed for bert-base-uncased
+{'loss': 0.2057, 'grad_norm': 0.3914223611354828, 'learning_rate': 2.3278370514064015e-08, 'epoch': 4.999191853887183}
+{'eval_runtime': 17.7953, 'eval_samples_per_second': 706.985, 'eval_steps_per_second': 88.394, 'epoch': 4.999191853887183}
+{'train_runtime': 2386.3189, 'train_samples_per_second': 103.699, 'train_steps_per_second': 6.481, 'train_loss': 0.26810748312722277, 'epoch': 4.999191853887183}
+Final evaluation results for bert-base-uncased:
+{'eval_runtime': 17.8083, 'eval_samples_per_second': 706.469, 'eval_steps_per_second': 88.33, 'epoch': 4.999191853887183}
+eval_results keys: dict_keys(['eval_runtime', 'eval_samples_per_second', 'eval_steps_per_second', 'epoch'])
+Final evaluation results for bert-base-uncased:
+{'eval_runtime': 17.8046, 'eval_samples_per_second': 706.614, 'eval_steps_per_second': 88.348, 'epoch': 4.999191853887183}
+eval_results keys: dict_keys(['eval_runtime', 'eval_samples_per_second', 'eval_steps_per_second', 'epoch'])
+{'eval_runtime': 17.8178, 'eval_samples_per_second': 706.09, 'eval_steps_per_second': 88.282, 'epoch': 4.999191853887183}
+Final evaluation results for bert-base-uncased:
+{'eval_runtime': 17.8178, 'eval_samples_per_second': 706.09, 'eval_steps_per_second': 88.282, 'epoch': 4.999191853887183}
+eval_results keys: dict_keys(['eval_runtime', 'eval_samples_per_second', 'eval_steps_per_second', 'epoch'])
+Final evaluation results for bert-base-uncased:
+{'eval_runtime': 17.801, 'eval_samples_per_second': 706.76, 'eval_steps_per_second': 88.366, 'epoch': 4.999191853887183}
+eval_results keys: dict_keys(['eval_runtime', 'eval_samples_per_second', 'eval_steps_per_second', 'epoch'])
+
+***** Training roberta-base *****
+
+***** Training roberta-base *****
+Gradient checkpointing is disabled for roberta-base
+
+***** Training roberta-base *****
+Gradient checkpointing is disabled for roberta-base
+Gradient checkpointing is disabled for roberta-base
+
+***** Training roberta-base *****
+Gradient checkpointing is disabled for roberta-base
+Epoch 1 completed for roberta-base
+Epoch 1 completed for roberta-base
+Epoch 1 completed for roberta-base
+Epoch 1 completed for roberta-base
+{'loss': 0.36, 'grad_norm': 26.838790893554688, 'learning_rate': 2.4017430600387348e-05, 'epoch': 0.9998386315959336}
+{'eval_runtime': 17.7513, 'eval_samples_per_second': 711.101, 'eval_steps_per_second': 88.895, 'epoch': 0.9998386315959336}
+Epoch 2 completed for roberta-base
+Epoch 2 completed for roberta-baseEpoch 2 completed for roberta-base
+
+Epoch 2 completed for roberta-base
+{'loss': 0.2302, 'grad_norm': 0.033668309450149536, 'learning_rate': 1.8015493867010976e-05, 'epoch': 2.0}
+{'eval_runtime': 17.6621, 'eval_samples_per_second': 714.692, 'eval_steps_per_second': 89.344, 'epoch': 2.0}
+Epoch 3 completed for roberta-base
+Epoch 3 completed for roberta-base
+Epoch 3 completed for roberta-base
+Epoch 3 completed for roberta-base
+{'loss': 0.1707, 'grad_norm': 0.06982976943254471, 'learning_rate': 1.202130406714009e-05, 'epoch': 2.9998386315959333}
+{'eval_runtime': 17.5833, 'eval_samples_per_second': 717.895, 'eval_steps_per_second': 89.744, 'epoch': 2.9998386315959333}
+Epoch 4 completed for roberta-base
+Epoch 4 completed for roberta-base
+Epoch 4 completed for roberta-baseEpoch 4 completed for roberta-base
+
+{'loss': 0.1344, 'grad_norm': 46.638309478759766, 'learning_rate': 6.023240800516462e-06, 'epoch': 4.0}
+{'eval_runtime': 18.1147, 'eval_samples_per_second': 696.837, 'eval_steps_per_second': 87.112, 'epoch': 4.0}

@@ -1,0 +1,13 @@
+Epoch 1 completed for bert-base-uncased
+Epoch 2 completed for bert-base-uncased
+Epoch 3 completed for bert-base-uncased
+Epoch 4 completed for bert-base-uncased
+Epoch 5 completed for bert-base-uncased
+Final evaluation results for bert-base-uncased:
+Exact Match (EM): N/A
+F1 Score: N/A
+
+Epoch 1 completed for roberta-base
+Epoch 2 completed for roberta-base
+Epoch 3 completed for roberta-base
+Epoch 4 completed for roberta-base

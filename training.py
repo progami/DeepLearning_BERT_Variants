@@ -11,7 +11,6 @@ import numpy as np
 import torch
 from datasets import Dataset
 from evaluate import load as load_metric
-from tqdm import tqdm
 from transformers import (
     AlbertForQuestionAnswering,
     AlbertTokenizerFast,
@@ -24,6 +23,7 @@ from transformers import (
     DataCollatorWithPadding,
     logging as transformers_logging,
 )
+from transformers.trainer_callback import TrainerCallback
 
 # Suppress warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -231,9 +231,10 @@ def postprocess_qa_predictions(
     print(f"Post-processing {len(examples)} example predictions split into {len(features)} features.")
 
     # Let's loop over all the examples
-    for example_id, feature_indices in tqdm(features_per_example.items()):
+    for example_id, feature_indices in features_per_example.items():
         # Those are the indices of the features associated to the current example.
-        context = examples['context'][example_id_to_index[example_id]]
+        example_index = example_id_to_index[example_id]
+        context = examples['context'][example_index]
         answers = []
 
         # Looping through all the features associated to the current example.
@@ -291,6 +292,9 @@ class DataCollatorForQA(DataCollatorWithPadding):
         ]
         return super().__call__(features)
 
+# Open the output file for writing
+output_file = open('results.out', 'w')
+
 # Function to train a model
 def train_model(model_name, tokenizer_class, model_class):
     print(f"\n***** Training {model_name} *****")
@@ -319,15 +323,20 @@ def train_model(model_name, tokenizer_class, model_class):
 
     # Define compute_metrics inside train_model to access tokenized_datasets
     def compute_metrics(p):
+        print("Computing metrics...")
         examples = dataset['test']
         features = tokenized_eval_dataset
 
         # Post-process the raw predictions to get final answers
-        final_predictions = postprocess_qa_predictions(
-            examples,
-            features,
-            p.predictions,
-        )
+        try:
+            final_predictions = postprocess_qa_predictions(
+                examples,
+                features,
+                p.predictions,
+            )
+        except Exception as e:
+            print(f"Error in postprocess_qa_predictions: {e}")
+            final_predictions = {}
 
         # Format the predictions and references as required by the metric
         formatted_predictions = [
@@ -337,6 +346,9 @@ def train_model(model_name, tokenizer_class, model_class):
             {'id': ex['id'], 'answers': ex['answers']} for ex in examples
         ]
 
+        print(f"Number of formatted_predictions: {len(formatted_predictions)}")
+        print(f"Number of references: {len(references)}")
+
         # Load the metric (use 'squad_v2' if unanswerable questions are present)
         has_impossible_answers = any(len(ans['text'][0]) == 0 for ans in examples['answers'])
         metric_name = 'squad_v2' if has_impossible_answers else 'squad'
@@ -344,11 +356,12 @@ def train_model(model_name, tokenizer_class, model_class):
 
         # Compute the metric
         results = metric.compute(predictions=formatted_predictions, references=references)
+        print(f"Metric results: {results}")
 
         # Return the metrics
         return {
-            'exact_match': results['exact_match'],
-            'f1': results['f1'],
+            'exact_match': results.get('exact_match', 0),
+            'f1': results.get('f1', 0),
         }
 
     # Adjust per_device_train_batch_size and gradient_accumulation_steps if necessary
@@ -359,6 +372,8 @@ def train_model(model_name, tokenizer_class, model_class):
     training_args = TrainingArguments(
         output_dir=f'./results_{model_name}',
         evaluation_strategy='epoch',
+        logging_strategy='epoch',  # Log only at the end of each epoch
+        logging_steps=1e9,         # Effectively disable step-wise logging
         learning_rate=args.learning_rate,
         per_device_train_batch_size=per_device_train_batch_size,
         per_device_eval_batch_size=args.batch_size,
@@ -367,13 +382,12 @@ def train_model(model_name, tokenizer_class, model_class):
         save_total_limit=2,
         remove_unused_columns=False,  # Keep all columns
         fp16=True,  # Enable mixed precision training
-        logging_steps=50,
         report_to="none",
         gradient_accumulation_steps=gradient_accumulation_steps,
         dataloader_num_workers=4,
         dataloader_pin_memory=True,
         ddp_find_unused_parameters=False,  # Set to False
-        # ddp_static_graph=True,  # Uncomment if you want to try static graph mode (experimental)
+        disable_tqdm=True,  # Disable progress bars
     )
 
     # Use the custom DataCollatorForQA
@@ -390,13 +404,40 @@ def train_model(model_name, tokenizer_class, model_class):
         compute_metrics=compute_metrics,
     )
 
+    # Callback to write logs at the end of each epoch
+    class LogCallback(TrainerCallback):
+        def on_epoch_end(self, args, state, control, **kwargs):
+            epoch = int(round(state.epoch))
+            message = f"Epoch {epoch} completed for {model_name}\n"
+            print(message.strip())
+            output_file.write(message)
+            output_file.flush()  # Ensure the message is written to the file
+
+    # Add the callback to the trainer
+    trainer.add_callback(LogCallback)
+
     # Train the model
     trainer.train()
 
     # Evaluate the model
     eval_results = trainer.evaluate()
-    print(f"Evaluation results for {model_name}:")
+    print(f"Final evaluation results for {model_name}:")
     print(eval_results)
+    print(f"eval_results keys: {eval_results.keys()}")  # Debugging line to check keys
+
+    # Retrieve metrics safely
+    exact_match = eval_results.get('eval_exact_match', eval_results.get('exact_match', 'N/A'))
+    f1_score = eval_results.get('eval_f1', eval_results.get('f1', 'N/A'))
+
+    # Helper function to format metrics
+    def format_metric(value):
+        return f"{value:.2f}" if isinstance(value, (int, float, np.float32, np.float64)) else str(value)
+
+    # Write the final evaluation results to the output file
+    output_file.write(f"Final evaluation results for {model_name}:\n")
+    output_file.write(f"Exact Match (EM): {format_metric(exact_match)}\n")
+    output_file.write(f"F1 Score: {format_metric(f1_score)}\n\n")
+    output_file.flush()
 
     # Save the model
     trainer.save_model(f'./{model_name}-finetuned-covid-qa')
@@ -423,4 +464,7 @@ if args.train_albert:
         tokenizer_class=AlbertTokenizerFast,
         model_class=AlbertForQuestionAnswering
     )
+
+# Close the output file
+output_file.close()
 
