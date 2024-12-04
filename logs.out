@@ -94,3 +94,79 @@ Epoch 4 completed for roberta-baseEpoch 4 completed for roberta-base
 
 {'loss': 0.1344, 'grad_norm': 46.638309478759766, 'learning_rate': 6.023240800516462e-06, 'epoch': 4.0}
 {'eval_runtime': 18.1147, 'eval_samples_per_second': 696.837, 'eval_steps_per_second': 87.112, 'epoch': 4.0}
+Epoch 5 completed for roberta-base
+Epoch 5 completed for roberta-base
+Epoch 5 completed for roberta-base
+Epoch 5 completed for roberta-base
+{'loss': 0.1039, 'grad_norm': 27.455007553100586, 'learning_rate': 2.9051000645577794e-08, 'epoch': 4.999193157979668}
+{'eval_runtime': 17.8236, 'eval_samples_per_second': 708.216, 'eval_steps_per_second': 88.534, 'epoch': 4.999193157979668}
+{'train_runtime': 2600.4446, 'train_samples_per_second': 95.313, 'train_steps_per_second': 5.957, 'train_loss': 0.1998402998784498, 'epoch': 4.999193157979668}
+Final evaluation results for roberta-base:
+{'eval_runtime': 17.5701, 'eval_samples_per_second': 718.438, 'eval_steps_per_second': 89.812, 'epoch': 4.999193157979668}
+eval_results keys: dict_keys(['eval_runtime', 'eval_samples_per_second', 'eval_steps_per_second', 'epoch'])
+Final evaluation results for roberta-base:
+{'eval_runtime': 17.5652, 'eval_samples_per_second': 718.638, 'eval_steps_per_second': 89.837, 'epoch': 4.999193157979668}
+eval_results keys: dict_keys(['eval_runtime', 'eval_samples_per_second', 'eval_steps_per_second', 'epoch'])
+{'eval_runtime': 17.5698, 'eval_samples_per_second': 718.447, 'eval_steps_per_second': 89.813, 'epoch': 4.999193157979668}
+Final evaluation results for roberta-base:
+{'eval_runtime': 17.5698, 'eval_samples_per_second': 718.447, 'eval_steps_per_second': 89.813, 'epoch': 4.999193157979668}
+eval_results keys: dict_keys(['eval_runtime', 'eval_samples_per_second', 'eval_steps_per_second', 'epoch'])
+Final evaluation results for roberta-base:
+{'eval_runtime': 17.5697, 'eval_samples_per_second': 718.452, 'eval_steps_per_second': 89.814, 'epoch': 4.999193157979668}
+eval_results keys: dict_keys(['eval_runtime', 'eval_samples_per_second', 'eval_steps_per_second', 'epoch'])
+
+***** Training albert-base-v2 *****
+
+***** Training albert-base-v2 *****
+
+***** Training albert-base-v2 *****
+Gradient checkpointing is disabled for albert-base-v2
+Gradient checkpointing is disabled for albert-base-v2
+Gradient checkpointing is disabled for albert-base-v2
+
+***** Training albert-base-v2 *****
+Gradient checkpointing is disabled for albert-base-v2
+Epoch 1 completed for albert-base-v2Epoch 1 completed for albert-base-v2
+
+Epoch 1 completed for albert-base-v2Epoch 1 completed for albert-base-v2
+
+{'loss': 0.3534, 'grad_norm': 17.127201080322266, 'learning_rate': 2.4016880275085963e-05, 'epoch': 1.0}
+{'eval_runtime': 21.0463, 'eval_samples_per_second': 617.781, 'eval_steps_per_second': 77.258, 'epoch': 1.0}
+Epoch 2 completed for albert-base-v2Epoch 2 completed for albert-base-v2
+
+Epoch 2 completed for albert-base-v2
+Epoch 2 completed for albert-base-v2
+{'loss': 0.1722, 'grad_norm': 13.583778381347656, 'learning_rate': 1.8016880275085966e-05, 'epoch': 2.0}
+{'eval_runtime': 20.4555, 'eval_samples_per_second': 635.625, 'eval_steps_per_second': 79.49, 'epoch': 2.0}
+Epoch 3 completed for albert-base-v2Epoch 3 completed for albert-base-v2
+Epoch 3 completed for albert-base-v2
+
+Epoch 3 completed for albert-base-v2
+{'loss': 0.1073, 'grad_norm': 0.005137672647833824, 'learning_rate': 1.202063144732729e-05, 'epoch': 3.0}
+{'eval_runtime': 21.0443, 'eval_samples_per_second': 617.838, 'eval_steps_per_second': 77.265, 'epoch': 3.0}
+Epoch 4 completed for albert-base-v2Epoch 4 completed for albert-base-v2
+Epoch 4 completed for albert-base-v2
+Epoch 4 completed for albert-base-v2
+
+{'loss': 0.0612, 'grad_norm': 0.2532709538936615, 'learning_rate': 6.02063144732729e-06, 'epoch': 4.0}
+{'eval_runtime': 20.7871, 'eval_samples_per_second': 625.484, 'eval_steps_per_second': 78.222, 'epoch': 4.0}
+Epoch 5 completed for albert-base-v2Epoch 5 completed for albert-base-v2
+
+Epoch 5 completed for albert-base-v2
+Epoch 5 completed for albert-base-v2
+{'loss': 0.0296, 'grad_norm': 0.0003202306106686592, 'learning_rate': 2.2507033447952486e-08, 'epoch': 5.0}
+{'eval_runtime': 20.6281, 'eval_samples_per_second': 630.306, 'eval_steps_per_second': 78.825, 'epoch': 5.0}
+{'train_runtime': 1397.3531, 'train_samples_per_second': 183.136, 'train_steps_per_second': 11.447, 'train_loss': 0.14474417283110932, 'epoch': 5.0}
+Final evaluation results for albert-base-v2:
+{'eval_runtime': 20.5551, 'eval_samples_per_second': 632.543, 'eval_steps_per_second': 79.104, 'epoch': 5.0}
+eval_results keys: dict_keys(['eval_runtime', 'eval_samples_per_second', 'eval_steps_per_second', 'epoch'])
+Final evaluation results for albert-base-v2:
+{'eval_runtime': 20.5561, 'eval_samples_per_second': 632.514, 'eval_steps_per_second': 79.101, 'epoch': 5.0}
+eval_results keys: dict_keys(['eval_runtime', 'eval_samples_per_second', 'eval_steps_per_second', 'epoch'])
+Final evaluation results for albert-base-v2:
+{'eval_runtime': 20.5564, 'eval_samples_per_second': 632.502, 'eval_steps_per_second': 79.099, 'epoch': 5.0}
+eval_results keys: dict_keys(['eval_runtime', 'eval_samples_per_second', 'eval_steps_per_second', 'epoch'])
+{'eval_runtime': 20.5606, 'eval_samples_per_second': 632.375, 'eval_steps_per_second': 79.083, 'epoch': 5.0}
+Final evaluation results for albert-base-v2:
+{'eval_runtime': 20.5606, 'eval_samples_per_second': 632.375, 'eval_steps_per_second': 79.083, 'epoch': 5.0}
+eval_results keys: dict_keys(['eval_runtime', 'eval_samples_per_second', 'eval_steps_per_second', 'epoch'])
