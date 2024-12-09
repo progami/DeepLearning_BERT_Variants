@@ -1,91 +1,32 @@
-# Fine-Tuning Transformer Models on COVID-QA Dataset
+# COVID-19 QA Chatbot Project
 
-This project involves fine-tuning transformer-based language models for question-answering tasks on the COVID-QA dataset.
+This repository contains code and experiments for developing a COVID-19 question-answering (QA) chatbot. We fine-tune large language models (LLMs) such as BERT, RoBERTa, and ALBERT on a COVID-19-specific QA dataset, as well as on the SQuAD dataset, to produce accurate, domain-specific responses.
 
-## Directory Structure
+## Project Overview
 
-- [`albert-base-v2-finetuned-covid-qa/`](#albert-base-v2-finetuned-covid-qa)
-- [`bert-base-uncased-finetuned-covid-qa/`](#bert-base-uncased-finetuned-covid-qa)
-- [`roberta-base-finetuned-covid-qa/`](#roberta-base-finetuned-covid-qa)
-- [`results_albert-base-v2/`](#results_albert-base-v2)
-- [`results_bert-base-uncased/`](#results_bert-base-uncased)
-- [`results_roberta-base/`](#results_roberta-base)
-- [`training.py`](#trainingpy)
-- [`inference.py`](#inferencepy)
-- [`COVID-QA.json`](#covid-qajson)
-- [`job_train.slurm`](#job_trainslurm)
-- [`logs.out`](#logsout)
-- [`error.err`](#errorerr)
-- [`results.out`](#resultsout)
+The goal is to adapt general-purpose transformers to the COVID-19 domain. We:
+- Use the [COVID-QA.json](./COVID-QA.json) dataset containing context-question-answer triples.
+- Compare multiple models (BERT, RoBERTa, ALBERT) after fine-tuning.
+- Evaluate each model using QA metrics (EM, F1) and language similarity metrics (BLEU, ROUGE, BERTScore).
+- Experiment with advanced fine-tuning techniques (e.g., QLoRA) and hyperparameter tuning.
+- Potentially integrate sentiment analysis or Retrieval-Augmented Generation (RAG) in future work.
 
----
+## Repository Structure
 
-### `albert-base-v2-finetuned-covid-qa/`
+- `training.py`: Script for fine-tuning QA models. Takes arguments to choose which model to train (`--train_bert`, `--train_roberta`, `--train_albert`).
+- `job_train.slurm`: SLURM submission script for HPC cluster training. Specify `--job-name=bert`, `roberta`, or `albert` when submitting.
+- `evaluate_all_models.py`: Script to compute EM, F1, BLEU, ROUGE-1, ROUGE-2, ROUGE-L, and BERTScore for all models that have `predictions.json`.
+- `COVID-QA.json`: The COVID-specific QA dataset.
+- `results_metrics.txt`: Generated after `evaluate_all_models.py` runs, containing all computed metrics.
 
-Contains the fine-tuned **ALBERT-base-v2** model on the COVID-QA dataset. [See README](./albert-base-v2-finetuned-covid-qa/README.md) for details.
+## Requirements
 
-### `bert-base-uncased-finetuned-covid-qa/`
+- Python 3.10
+- [Hugging Face Transformers](https://github.com/huggingface/transformers)
+- [Datasets](https://github.com/huggingface/datasets)
+- NLTK, `rouge-score`, `bert-score`
 
-Contains the fine-tuned **BERT-base-uncased** model on the COVID-QA dataset. [See README](./bert-base-uncased-finetuned-covid-qa/README.md) for details.
+Install requirements:
+```bash
+pip install transformers datasets nltk rouge-score bert-score
 
-### `roberta-base-finetuned-covid-qa/`
-
-Contains the fine-tuned **RoBERTa-base** model on the COVID-QA dataset. [See README](./roberta-base-finetuned-covid-qa/README.md) for details.
-
-### `results_albert-base-v2/`
-
-Contains training checkpoints and results for **ALBERT-base-v2**. [See README](./results_albert-base-v2/README.md) for details.
-
-### `results_bert-base-uncased/`
-
-Contains training checkpoints and results for **BERT-base-uncased**. [See README](./results_bert-base-uncased/README.md) for details.
-
-### `results_roberta-base/`
-
-Contains training checkpoints and results for **RoBERTa-base**. [See README](./results_roberta-base/README.md) for details.
-
-### `training.py`
-
-Python script used to fine-tune the transformer models on the COVID-QA dataset.
-
-### `inference.py`
-
-Python script used to perform inference using the fine-tuned models.
-
-### `COVID-QA.json`
-
-The COVID-QA dataset in JSON format, used for training and evaluation.
-
-### `job_train.slurm`
-
-SLURM job script for submitting training jobs to a computing cluster.
-
-### `logs.out`
-
-Standard output logs from training and evaluation runs.
-
-### `error.err`
-
-Error logs from training or evaluation runs.
-
-### `results.out`
-
-Output containing results from training or evaluation runs.
-
----
-
-## Usage
-
-1. **Training Models:**
-   - Use `training.py` to fine-tune models. Adjust hyperparameters and model configurations as needed.
-   - Submit the `job_train.slurm` script to your SLURM cluster for training jobs.
-
-2. **Running Inference:**
-   - Use `inference.py` to perform inference with the fine-tuned models.
-   - Ensure that the appropriate model directory is specified in the script.
-
-3. **Analyzing Results:**
-   - Check `logs.out` and `results.out` for training progress and evaluation metrics.
-   - Use the checkpoints in `results_*` directories if you wish to resume training or analyze intermediate models.
-
----
