@@ -1,0 +1,30 @@
+Evaluation Results for All Models:
+
+Model: albert
+Exact Match (EM): 14.60%
+F1 Score: 40.07%
+BLEU: 0.2178
+ROUGE-1 (F1): 0.4131
+ROUGE-2 (F1): 0.3198
+ROUGE-L (F1): 0.4056
+BERTScore F1: 0.8816
+
+Model: roberta
+Exact Match (EM): 20.54%
+F1 Score: 41.55%
+BLEU: 0.2419
+ROUGE-1 (F1): 0.4232
+ROUGE-2 (F1): 0.3359
+ROUGE-L (F1): 0.4179
+BERTScore F1: 0.8848
+
+Model: bert
+Exact Match (EM): 11.63%
+F1 Score: 30.41%
+BLEU: 0.1673
+ROUGE-1 (F1): 0.3125
+ROUGE-2 (F1): 0.2387
+ROUGE-L (F1): 0.3060
+BERTScore F1: 0.8637
+
+All model results have been saved here.

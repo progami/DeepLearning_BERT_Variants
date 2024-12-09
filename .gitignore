@@ -1,7 +1,7 @@
 # Ignore model checkpoints and results directories
-results_*/
-
-*finetuned-covid-qa/
+bert/
+albert/
+roberta/
 
 # Ignore intermediate and temporary files
 *.tmp
