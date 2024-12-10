@@ -29,7 +29,6 @@ env/
 # Ignore large dataset files
 *.csv
 *.tsv
-*.json
 *.parquet
 
 # Ignore large binary files
