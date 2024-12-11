@@ -9,7 +9,7 @@ import collections
 import numpy as np
 import torch
 
-from datasets import Dataset
+from datasets import load_dataset
 from transformers import (
     AlbertForQuestionAnswering,
     AlbertTokenizerFast,
@@ -26,10 +26,9 @@ from transformers.trainer_callback import TrainerCallback
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 transformers_logging.set_verbosity_error()
-
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-parser = argparse.ArgumentParser(description='Fine-tune QA models on COVID-19 dataset.')
+parser = argparse.ArgumentParser(description='Fine-tune QA models on SQuAD dataset.')
 parser.add_argument('--train_bert', action='store_true')
 parser.add_argument('--train_roberta', action='store_true')
 parser.add_argument('--train_albert', action='store_true')
@@ -42,66 +41,26 @@ parser.add_argument('--gradient_accumulation_steps', type=int, default=2)
 args = parser.parse_args()
 
 if not (args.train_bert or args.train_roberta or args.train_albert):
-    parser.error('No model selected for training. Use --train_bert, --train_roberta, or --train_albert.')
+    parser.error('No model selected. Use --train_bert, --train_roberta, or --train_albert.')
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using device: {device}")
 
-file_path = "COVID-QA.json"
-with open(file_path, 'r') as f:
-    covid_qa_data = json.load(f)
-
-contexts = []
-questions = []
-answers = []
-ids = []
-
-for item in covid_qa_data['data']:
-    for paragraph in item['paragraphs']:
-        context = paragraph['context']
-        for qa in paragraph['qas']:
-            question = qa['question']
-            qa_id = qa['id']
-            is_impossible = qa.get('is_impossible', False)
-            if not is_impossible:
-                if 'answers' in qa and qa['answers']:
-                    answer = qa['answers'][0]
-                    answer_text = answer['text']
-                    answer_start = answer['answer_start']
-                    if answer_start is not None and answer_text:
-                        answers.append({'text': [answer_text], 'answer_start': [answer_start]})
-                    else:
-                        answers.append({'text': [''], 'answer_start': [0]})
-                else:
-                    answers.append({'text': [''], 'answer_start': [0]})
-            else:
-                answers.append({'text': [''], 'answer_start': [0]})
-            contexts.append(context)
-            questions.append(question)
-            ids.append(str(qa_id))
-
-data_dict = {
-    'id': ids,
-    'context': contexts,
-    'question': questions,
-    'answers': answers
-}
-
-# 60% train, 20% val, 20% test
-full_dataset = Dataset.from_dict(data_dict)
-train_val_test = full_dataset.train_test_split(test_size=0.4, shuffle=True, seed=42)
-val_test = train_val_test['test'].train_test_split(test_size=0.5, shuffle=True, seed=42)
-train_dataset = train_val_test['train']
-val_dataset = val_test['train']
-test_dataset = val_test['test']
+print("Loading SQuAD dataset...")
+squad = load_dataset("squad")
+train_dataset = squad["train"]
+val_dataset = squad["validation"]  # Use the original validation set directly as test set
 
 tokenizer = None
 
 def prepare_train_features(examples):
+    answer_starts = [ans['answer_start'][0] if ans['answer_start'] else 0 for ans in examples['answers']]
+    answer_texts = [ans['text'][0] if ans['text'] else '' for ans in examples['answers']]
+
     tokenized_examples = tokenizer(
         examples['question'],
         examples['context'],
-        truncation='only_second',
+        truncation=True,
         max_length=args.max_length,
         stride=args.doc_stride,
         return_overflowing_tokens=True,
@@ -120,25 +79,23 @@ def prepare_train_features(examples):
         cls_index = input_ids.index(tokenizer.cls_token_id)
         sequence_ids = tokenized_examples.sequence_ids(i)
         sample_index = sample_mapping[i]
-        ans = examples['answers'][sample_index]
 
-        answer_starts = ans['answer_start']
-        answer_texts = ans['text']
+        start_char = answer_starts[sample_index]
+        end_char = start_char + len(answer_texts[sample_index])
 
-        if len(answer_starts) == 0 or len(answer_texts) == 0 or answer_texts[0] == '':
+        token_start_index = 0
+        while sequence_ids[token_start_index] != 1:
+            token_start_index += 1
+        token_end_index = len(input_ids) - 1
+        while sequence_ids[token_end_index] != 1:
+            token_end_index -= 1
+
+        if len(answer_texts[sample_index]) == 0:
             tokenized_examples['start_positions'].append(cls_index)
             tokenized_examples['end_positions'].append(cls_index)
         else:
-            start_char = answer_starts[0]
-            end_char = start_char + len(answer_texts[0])
-            token_start_index = 0
-            while sequence_ids[token_start_index] != 1:
-                token_start_index += 1
-            token_end_index = len(input_ids) - 1
-            while sequence_ids[token_end_index] != 1:
-                token_end_index -= 1
-
-            if not (offsets[token_start_index][0] <= start_char and offsets[token_end_index][1] >= end_char):
+            if not (offsets[token_start_index][0] <= start_char and
+                    offsets[token_end_index][1] >= end_char):
                 tokenized_examples['start_positions'].append(cls_index)
                 tokenized_examples['end_positions'].append(cls_index)
             else:
@@ -146,7 +103,7 @@ def prepare_train_features(examples):
                     token_start_index += 1
                 start_position = token_start_index - 1
 
-                while token_end_index >= 0 and offsets[token_end_index][1] >= end_char:
+                while offsets[token_end_index][1] >= end_char:
                     token_end_index -= 1
                 end_position = token_end_index + 1
 
@@ -159,7 +116,7 @@ def prepare_validation_features(examples):
     tokenized_examples = tokenizer(
         examples['question'],
         examples['context'],
-        truncation='only_second',
+        truncation=True,
         max_length=args.max_length,
         stride=args.doc_stride,
         return_overflowing_tokens=True,
@@ -168,7 +125,6 @@ def prepare_validation_features(examples):
     )
 
     sample_mapping = tokenized_examples.pop('overflow_to_sample_mapping')
-
     tokenized_examples['example_id'] = []
 
     for i in range(len(tokenized_examples['input_ids'])):
@@ -190,7 +146,6 @@ def postprocess_qa_predictions(
     max_answer_length=30,
 ):
     all_start_logits, all_end_logits = predictions
-
     example_id_to_index = {k: i for i, k in enumerate(examples['id'])}
     features_per_example = collections.defaultdict(list)
     for i, f in enumerate(features):
@@ -220,7 +175,7 @@ def postprocess_qa_predictions(
                         continue
                     if offset_mapping[start_index] is None or offset_mapping[end_index] is None:
                         continue
-                    if end_index < start_index or end_index - start_index + 1 > max_answer_length:
+                    if end_index < start_index or (end_index - start_index + 1) > max_answer_length:
                         continue
 
                     start_char = offset_mapping[start_index][0]
@@ -252,7 +207,6 @@ def train_model(model_name, tokenizer_class, model_class):
     global tokenizer
 
     print(f"\n***** Training {model_name} *****")
-    # Map short model names to actual model identifiers on HF Hub
     if model_name == 'bert':
         hf_model_name = 'bert-base-uncased'
     elif model_name == 'roberta':
@@ -279,13 +233,13 @@ def train_model(model_name, tokenizer_class, model_class):
         remove_columns=val_dataset.column_names,
     )
 
-    tokenized_test_dataset = test_dataset.map(
+    # test_dataset is the SQuAD validation set used for final prediction
+    tokenized_test_dataset = val_dataset.map(
         prepare_validation_features,
         batched=True,
-        remove_columns=test_dataset.column_names,
+        remove_columns=val_dataset.column_names,
     )
 
-    # Use model_name as directory name
     os.makedirs(model_name, exist_ok=True)
 
     training_args = TrainingArguments(
@@ -321,44 +275,38 @@ def train_model(model_name, tokenizer_class, model_class):
 
     class LogCallback(TrainerCallback):
         def on_epoch_end(self, args, state, control, **kwargs):
-            if trainer.is_world_process_zero():
-                epoch = int(round(state.epoch))
-                print(f"Epoch {epoch} completed for {model_name}")
+            epoch = int(round(state.epoch))
+            print(f"Epoch {epoch} completed for {model_name}")
 
     trainer.add_callback(LogCallback)
     trainer.train()
 
-    if trainer.is_world_process_zero():
-        print("Evaluating the model on test dataset...")
+    print("Evaluating the model on the original validation set for predictions...")
     raw_predictions = trainer.predict(tokenized_test_dataset)
-    if trainer.is_world_process_zero():
-        print("Prediction completed.")
+    print("Prediction completed.")
 
     final_predictions = postprocess_qa_predictions(
-        test_dataset,
+        val_dataset,
         tokenized_test_dataset,
         raw_predictions.predictions,
     )
 
-    if trainer.is_world_process_zero():
-        formatted_predictions = [
-            {"id": ex["id"], "prediction_text": final_predictions[ex["id"]]}
-            for ex in test_dataset
-        ]
-        predictions_path = os.path.join(model_name, "predictions.json")
-        with open(predictions_path, "w") as f:
-            json.dump(formatted_predictions, f, indent=2)
+    formatted_predictions = [
+        {"id": ex["id"], "prediction_text": final_predictions[ex["id"]]}
+        for ex in val_dataset
+    ]
+    predictions_path = os.path.join(model_name, "predictions.json")
+    with open(predictions_path, "w") as f:
+        json.dump(formatted_predictions, f, indent=2)
 
-        print(f"Predictions saved to {predictions_path}.")
+    print(f"Predictions saved to {predictions_path}.")
 
-    # Save the model with just the short name + "-finetuned"
     trainer.save_model(os.path.join(model_name, f"{model_name}-finetuned"))
     tokenizer.save_pretrained(os.path.join(model_name, f"{model_name}-finetuned"))
 
     if torch.distributed.is_initialized():
         torch.distributed.destroy_process_group()
 
-# Determine which model to train based on args
 if args.train_bert:
     train_model('bert', BertTokenizerFast, BertForQuestionAnswering)
 elif args.train_roberta:

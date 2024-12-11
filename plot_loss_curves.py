@@ -3,9 +3,9 @@ import re
 import matplotlib.pyplot as plt
 
 # Paths to each model's log file based on your directory structure
-albert_log = "albert/out_albert"
-bert_log = "bert/out_bert"
-roberta_log = "roberta/out_roberta"
+albert_log = "albert/out_albert.out"
+bert_log = "bert/out_bert.out"
+roberta_log = "roberta/out_roberta.out"
 
 # Regex patterns to identify lines
 epoch_pattern = re.compile(r"Epoch\s+(\d+)\s+completed\s+for\s+(albert|bert|roberta)")

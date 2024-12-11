@@ -5,21 +5,20 @@ import nltk
 from rouge_score import rouge_scorer
 from bert_score import score as bert_score
 from statistics import mean
+from datasets import load_dataset
 
 # Ensure required NLTK data
 try:
     nltk.data.find('tokenizers/punkt')
 except LookupError:
-    nltk.download('punkt')
+    nltk.download('punkt', quiet=True)
 
-# punkt_tab is a newer resource required by certain NLTK tokenizers
 try:
     nltk.data.find('tokenizers/punkt_tab')
 except LookupError:
-    nltk.download('punkt_tab')
+    nltk.download('punkt_tab', quiet=True)
 
 def normalize_answer(s):
-    """Lower text and remove punctuation, articles and extra whitespace."""
     import string
     def remove_articles(text):
         return " ".join([w for w in text.split() if w.lower() not in ('a', 'an', 'the')])
@@ -61,31 +60,22 @@ def f1_score(prediction, ground_truths):
 def load_predictions(predictions_path):
     with open(predictions_path, "r") as f:
         preds = json.load(f)
-    return {item["id"]: item["prediction_text"] for item in preds}
+    return {str(item["id"]): item["prediction_text"] for item in preds}
 
-def load_dataset(file_path):
-    with open(file_path, 'r') as f:
-        data = json.load(f)
-
+def load_squad_references():
+    squad = load_dataset("squad")
     ground_truths = {}
-    for item in data['data']:
-        for paragraph in item['paragraphs']:
-            for qa in paragraph['qas']:
-                qid = str(qa['id'])
-                if 'answers' in qa and qa['answers']:
-                    refs = [a['text'] for a in qa['answers'] if 'text' in a and a['text']]
-                    if not refs:
-                        refs = ['']
-                else:
-                    refs = ['']
-                ground_truths[qid] = refs
+    for item in squad['validation']:
+        qid = str(item['id'])
+        refs = item['answers']['text']
+        if not refs:
+            refs = ['']
+        ground_truths[qid] = refs
     return ground_truths
 
 def main():
-    original_dataset_path = "COVID-QA.json"
-    if not os.path.exists(original_dataset_path):
-        print("COVID-QA.json not found in current directory. Please place it here.")
-        return
+    print("Evaluating using SQuAD dataset references...")
+    ground_truths = load_squad_references()
 
     current_dir = os.getcwd()
     dirs = [d for d in os.listdir(current_dir) if os.path.isdir(d)]
@@ -98,8 +88,6 @@ def main():
     if not model_dirs:
         print("No model directories with predictions.json found.")
         return
-
-    ground_truths = load_dataset(original_dataset_path)
 
     with open("results_metrics.txt", "w") as outfile:
         outfile.write("Evaluation Results for All Models:\n\n")
@@ -127,11 +115,18 @@ def main():
             avg_f1 = mean(f1_scores)*100 if f1_scores else 0.0
 
             # Compute BLEU
-            tokenized_hyps = [nltk.word_tokenize(h) for h in filtered_hyps]
-            tokenized_refs = [[nltk.word_tokenize(r)] for r in filtered_refs]
-            bleu_score = nltk.translate.bleu_score.corpus_bleu(tokenized_refs, tokenized_hyps)
+            bleu_score = 0.0
+            if filtered_refs and filtered_hyps:
+                tokenized_hyps = [nltk.word_tokenize(h) for h in filtered_hyps]
+                tokenized_refs = [[nltk.word_tokenize(r)] for r in filtered_refs]
+                # Ensure no division by zero
+                if all(len(ref[0]) > 0 for ref in tokenized_refs) and all(len(h) > 0 for h in tokenized_hyps):
+                    try:
+                        bleu_score = nltk.translate.bleu_score.corpus_bleu(tokenized_refs, tokenized_hyps)
+                    except ZeroDivisionError:
+                        bleu_score = 0.0
 
-            # Compute ROUGE (rouge1, rouge2, rougeL)
+            # ROUGE
             scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
             rouge1_scores = []
             rouge2_scores = []
@@ -145,9 +140,11 @@ def main():
             avg_rouge2 = mean(rouge2_scores) if rouge2_scores else 0.0
             avg_rougel = mean(rougel_scores) if rougel_scores else 0.0
 
-            # Compute BERTScore
-            P, R, F1 = bert_score(filtered_hyps, filtered_refs, lang="en")
-            bert_f1 = float(F1.mean()) if len(F1) > 0 else 0.0
+            # BERTScore
+            bert_f1 = 0.0
+            if filtered_refs and filtered_hyps:
+                P, R, F1 = bert_score(filtered_hyps, filtered_refs, lang="en")
+                bert_f1 = float(F1.mean()) if len(F1) > 0 else 0.0
 
             print("\nModel:", model_dir)
             print(f"Exact Match (EM): {avg_em:.2f}%")

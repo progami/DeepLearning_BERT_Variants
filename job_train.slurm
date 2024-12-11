@@ -9,11 +9,6 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=jarrar@ksu.edu
 
-# No job-name here; provide --job-name=bert or --job-name=roberta or --job-name=albert at submission time.
-# Example: sbatch --job-name=bert job_train.slurm
-
-# The job name corresponds to the model (bert, roberta, albert).
-# Store logs in a directory named after the model.
 #SBATCH --output=%x/out_%x.out
 #SBATCH --error=%x/err_%x.err
 
@@ -28,12 +23,10 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export MASTER_PORT=12355
 
-MODEL=${SLURM_JOB_NAME}  # Should be bert, roberta, or albert
+MODEL=${SLURM_JOB_NAME}
 
-# Create a folder named after the model if it doesn't exist
 mkdir -p ${MODEL}
 
-# Determine which flag to set based on job name and set the underlying Hugging Face model
 if [ "$MODEL" == "bert" ]; then
     TRAIN_FLAG="--train_bert"
 elif [ "$MODEL" == "roberta" ]; then
@@ -45,7 +38,6 @@ else
     exit 1
 fi
 
-# Run training script
 torchrun --nnodes=1 --nproc_per_node=4 training.py \
     $TRAIN_FLAG \
     --epochs 20 \
